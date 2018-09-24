@@ -12,5 +12,11 @@ namespace SportEvent.Bll
         {
             return $"Add the {model.EventName} is complete.";
         }
+
+        public string RemoveEvent(EventModel model)
+        {
+            return $"Remove the {model.EventName} is complete.";
+        }
+
     }
 }

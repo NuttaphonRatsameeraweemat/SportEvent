@@ -52,6 +52,18 @@ namespace SportEvent.Controllers
             return Ok(_event.AddEvent(model));
         }
 
+        /// <summary>
+        /// Delete sport event.
+        /// </summary>
+        /// <param name="model">The event model.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("DeleteEvent")]
+        public IActionResult RemoveEvent(EventModel model)
+        {
+            return Ok(_event.RemoveEvent(model));
+        }
+
         #endregion
 
     }
