@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>8ffb88dc-0cac-4053-81f6-aaf6de35a350</ProjectGuid>
+    <ProjectGuid>3bdabb21-37bc-44b6-9130-c76d09b35422</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/api/values</DockerServiceUrl>
     <DockerServiceName>sportevent</DockerServiceName>

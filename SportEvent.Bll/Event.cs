@@ -1,8 +1,5 @@
 ﻿using SportEvent.Bll.Interfaces;
 using SportEvent.Bll.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SportEvent.Bll
 {
@@ -17,6 +14,6 @@ namespace SportEvent.Bll
         {
             return $"Remove the {model.EventName} is complete.";
         }
-
+        
     }
 }
