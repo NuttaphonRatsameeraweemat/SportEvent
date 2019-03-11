@@ -28,12 +28,18 @@ namespace SportEvent
             services.ConfigureBll();
             services.ConfigureLoggerService();
             services.ConfigureAuthentication();
+            services.ConfigureCors();
+
             services.AddMvc();
+            services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.ConfigureMiddleware();
+            app.ConfigureSwagger();
+            app.UseCors("CorsPolicy");
             app.UseMvc();
         }
     }

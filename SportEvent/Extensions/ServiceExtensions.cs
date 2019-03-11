@@ -9,6 +9,8 @@ using SportEvent.Helper;
 using SportEvent.Helper.Interfaces;
 using SportEvent.Bll.Interfaces;
 using SportEvent.Bll;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
 
 namespace SportEvent.Extensions
 {
@@ -44,6 +46,67 @@ namespace SportEvent.Extensions
         public static void ConfigureLoggerService(this IServiceCollection services)
         {
             services.AddSingleton<ILoggerManager, LoggerManager>();
+        }
+
+        /// <summary>
+        /// Add CORS Configuration.
+        /// </summary>
+        /// <param name="services"></param>
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+        }
+
+        /// <summary>
+        /// Add Swagger.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        public static void AddSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+
+                // Swagger 2.+ support
+                var security = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer", new string[] { }},
+                };
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "Header",
+                    Type = "apiKey"
+                });
+                c.AddSecurityRequirement(security);
+
+            });
+        }
+
+        /// <summary>
+        /// Add Swagger.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        public static void ConfigureSwagger(this IApplicationBuilder app)
+        {
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
         }
 
         /// <summary>
