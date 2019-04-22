@@ -11,6 +11,13 @@ using SportEvent.Bll.Interfaces;
 using SportEvent.Bll;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
 namespace SportEvent.Extensions
 {
@@ -37,6 +44,7 @@ namespace SportEvent.Extensions
         public static void ConfigureBll(this IServiceCollection services)
         {
             services.AddScoped<IEvent, Event>();
+            services.AddScoped<ILogin, LoginBll>();
         }
 
         /// <summary>
@@ -62,6 +70,16 @@ namespace SportEvent.Extensions
                     .AllowAnyHeader()
                     .AllowCredentials());
             });
+        }
+        
+        /// <summary>
+        /// Config Api Routes Prefix.
+        /// </summary>
+        /// <param name="opts">The MvcOptions.</param>
+        /// <param name="routeAttribute">The IRouteTemplateProvider.</param>
+        public static void UseApiGlobalConfigRoutePrefix(this MvcOptions opts, IRouteTemplateProvider routeAttribute)
+        {
+            opts.Conventions.Insert(0, new ApiGlobalPrefixRouteProvider(routeAttribute));
         }
 
         /// <summary>
@@ -125,6 +143,53 @@ namespace SportEvent.Extensions
         public static void ConfigureAuthentication(this IServiceCollection services)
         {
             services.AddScoped<BasicAuthAttribute>();
+        }
+
+        /// <summary>
+        /// Add Jwt Authentication and Setting.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="Configuration"></param>
+        public static void ConfigureJwtAuthen(this IServiceCollection services, IConfiguration Configuration)
+        {
+            var option = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = System.TimeSpan.Zero,
+                ValidIssuer = Configuration["Jwt:Issuer"],
+                ValidAudience = Configuration["Jwt:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            };
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+             .AddJwtBearer(options =>
+             {
+                 options.TokenValidationParameters = option;
+                 options.Events = new JwtBearerEvents
+                 {
+                     OnAuthenticationFailed = context =>
+                     {
+                         context.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                         var model = new
+                         {
+                             context.Response.StatusCode,
+                             Message = "Unauthorized."
+                         };
+                         string json = JsonConvert.SerializeObject(model, new JsonSerializerSettings
+                         {
+                             ContractResolver = new CamelCasePropertyNamesContractResolver()
+                         });
+                         context.Response.OnStarting(async () =>
+                         {
+                             context.Response.ContentType = "application/json";
+                             await context.Response.WriteAsync(json);
+                         });
+                         return System.Threading.Tasks.Task.CompletedTask;
+                     },
+                 };
+             });
         }
 
     }

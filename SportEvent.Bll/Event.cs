@@ -5,14 +5,14 @@ namespace SportEvent.Bll
 {
     public class Event : IEvent
     {
-        public string AddEvent(EventModel model)
+        public EventModel AddEvent(EventModel model)
         {
-            return $"Add the {model.EventName} is complete.";
+            return model;
         }
 
-        public string RemoveEvent(EventModel model)
+        public EventModel RemoveEvent(EventModel model)
         {
-            return $"Remove the {model.EventName} is complete.";
+            return model;
         }
         
     }

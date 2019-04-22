@@ -4,7 +4,7 @@ namespace SportEvent.Bll.Interfaces
 {
     public interface IEvent
     {
-        string AddEvent(EventModel model);
-        string RemoveEvent(EventModel model);
+        EventModel AddEvent(EventModel model);
+        EventModel RemoveEvent(EventModel model);
     }
 }

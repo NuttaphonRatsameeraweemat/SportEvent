@@ -7,7 +7,7 @@ using SportEvent.Extensions;
 
 namespace SportEvent.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     //[ServiceFilter(typeof(BasicAuthAttribute))]
     public class ValuesController : ControllerBase

@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SportEvent.Bll.Interfaces;
 using SportEvent.Bll.Model;
 using SportEvent.Extensions;
 
 namespace SportEvent.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(BasicAuthAttribute))]
+    [Authorize]
     public class EventController : ControllerBase
     {
 

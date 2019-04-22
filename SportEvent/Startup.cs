@@ -29,14 +29,19 @@ namespace SportEvent
             services.ConfigureLoggerService();
             services.ConfigureAuthentication();
             services.ConfigureCors();
+            services.ConfigureJwtAuthen(Configuration);
 
-            services.AddMvc();
+            services.AddMvc(opt =>
+            {
+                opt.UseApiGlobalConfigRoutePrefix(new RouteAttribute("api"));
+            });
             services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseAuthentication();
             app.ConfigureMiddleware();
             app.ConfigureSwagger();
             app.UseCors("CorsPolicy");
